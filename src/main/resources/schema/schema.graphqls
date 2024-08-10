@@ -1,0 +1,37 @@
+scalar Long
+
+type Query {
+    channels: [Channel!]!
+    messages(channelName: String!): [Message!]!
+}
+
+type Mutation {
+    addMessage(channelName: String!, userId: String!, message: String!): Message!
+}
+
+type Subscription {
+    messageSent(channelName: String!): Message!
+}
+
+# best practice: every TYPE has an `id: ID!`
+# make it of type 'ID' which is a built-in graph ql scalar
+type User {
+    id: ID!,
+    name: String!,
+}
+
+# make it of type 'ID' which is a built-in graph ql scalar
+type Channel {
+    id: ID!,
+    messages: [Message!]!,
+    users: [User!]!,
+}
+
+# make it of type 'ID' which is a built-in graph ql scalar
+# make sure ur data fetches arent' recursive if you use `channel: Channel!` but you can err on the side of caution and have a specific channel ID
+type Message {
+    id: ID!,
+    user: User!,
+    time: Long!,
+    message: String!,
+}
