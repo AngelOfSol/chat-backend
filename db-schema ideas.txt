@@ -1,0 +1,35 @@
+CREATE KEYSPACE IF NOT EXISTS chat_db WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 1 };
+
+CREATE TABLE IF NOT EXISTS chat_db.channels (
+    channel_id text PRIMARY KEY,
+);
+CREATE TABLE IF NOT EXISTS chat_db.messages (
+    message_id timeuuid,
+    channel_id text,
+    user_id text,
+    user_name text,
+    time timestamp,
+    message text,
+    PRIMARY KEY ((channel_id), message_id)
+);
+
+-- Insert some data
+-- INSERT INTO chat_db.channels
+-- (channel_id)
+-- VALUES ('General');
+-- 
+-- INSERT INTO chat_db.channels
+-- (channel_id)
+-- VALUES ('Specific');
+-- 
+-- INSERT INTO chat_db.messages
+-- (message_id, channel_id, user_id, user_name, time, message)
+-- VALUES
+-- (now(), 'General', '111-111', 'Alice', toTimeStamp(now()), 'Test Message One');
+-- 
+-- 
+-- INSERT INTO chat_db.messages
+-- (message_id, channel_id, user_id, user_name, time, message)
+-- VALUES
+-- (now(), 'Specific', '222-111', 'Bob', toTimeStamp(now()), 'Test Message From Bob');
+

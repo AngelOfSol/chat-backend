@@ -7,7 +7,7 @@ type Query {
 }
 
 type Mutation {
-    addMessage(channelName: String!, userId: String!, message: String!): Message!
+    addMessage(channelName: String!, userId: String!, userName: String!, message: String!): Message!
 }
 
 type Subscription {

@@ -45,10 +45,12 @@ public class SecurityConfiguration {
 
 		http
 				.cors(cors -> cors.configurationSource(source))
+				// FOR DEV ONLY
+				.csrf(crsf -> crsf.disable())
 				.authorizeExchange((authorize) -> authorize
 						// websocket authorization is handled by the interceptor
 						.pathMatchers("/subscriptions/**").permitAll()
-						.anyExchange().authenticated())
+						.anyExchange().permitAll())
 				.oauth2ResourceServer((oauth2) -> oauth2
 						.jwt(jwt -> jwt.jwtDecoder(jwtDecoder())));
 
