@@ -3,6 +3,7 @@ scalar Long
 type Query {
     channels: [Channel!]!
     messages(channelName: String!): [Message!]!
+    allMessagesForUser(userId: String!): [Message!]!
 }
 
 type Mutation {
@@ -11,6 +12,7 @@ type Mutation {
 
 type Subscription {
     messageSent(channelName: String!): Message!
+    messageSentForUser(userId: String!): Message!
 }
 
 # best practice: every TYPE has an `id: ID!`
@@ -31,6 +33,7 @@ type Channel {
 # make sure ur data fetches arent' recursive if you use `channel: Channel!` but you can err on the side of caution and have a specific channel ID
 type Message {
     id: ID!,
+    channel_id: ID!,
     user: User!,
     time: Long!,
     message: String!,

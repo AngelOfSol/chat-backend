@@ -61,13 +61,23 @@ public class ChannelDataFetcher {
         return messages;
     }
 
+    @DgsData(parentType = DgsConstants.QUERY_TYPE, field = DgsConstants.QUERY.AllMessagesForUser)
+    public List<Message> allMessagesForUser(
+            @InputArgument(name = DgsConstants.QUERY.ALLMESSAGESFORUSER_INPUT_ARGUMENT.UserId) String userId) {
+
+        var channels = service.channelList.values().stream()
+                .flatMap(value -> value.stream())
+                .collect(Collectors.toList());
+        return channels;
+    }
+
     @DgsData(parentType = DgsConstants.MUTATION_TYPE, field = DgsConstants.MUTATION.AddMessage)
     public Message addMessage(
             @InputArgument(name = DgsConstants.MUTATION.ADDMESSAGE_INPUT_ARGUMENT.ChannelName) String channelName,
             @InputArgument(name = DgsConstants.MUTATION.ADDMESSAGE_INPUT_ARGUMENT.UserId) String userId,
             @InputArgument(name = DgsConstants.MUTATION.ADDMESSAGE_INPUT_ARGUMENT.Message) String messageData) {
         var time = Long.valueOf(System.currentTimeMillis());
-        var message = new Message(userId.concat(time.toString()),
+        var message = new Message(userId.concat(time.toString()), channelName,
                 User.newBuilder().id(userId).build(), time,
                 messageData);
 
@@ -79,6 +89,15 @@ public class ChannelDataFetcher {
     public Publisher<Message> messageSent(
             @InputArgument(name = DgsConstants.SUBSCRIPTION.MESSAGESENT_INPUT_ARGUMENT.ChannelName) String channelName) {
         return service.getMessagePublisher().filter(value -> value.channelName().equals(channelName))
+                .map(value -> value.message());
+
+    }
+
+    @DgsSubscription(field = DgsConstants.SUBSCRIPTION.MessageSentForUser)
+    public Publisher<Message> messageSentForUser(
+            @InputArgument(name = DgsConstants.SUBSCRIPTION.MESSAGESENTFORUSER_INPUT_ARGUMENT.UserId) String userId) {
+        // TODO filter by user, currently all messages because backend schema undecided
+        return service.getMessagePublisher()
                 .map(value -> value.message());
 
     }
